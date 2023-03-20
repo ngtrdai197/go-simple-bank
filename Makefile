@@ -3,7 +3,13 @@ include app.env
 # Variables for binding arguments from cmd
 MIGRATION_FILE_NAME?=default_migration_file_name
 
-.PHONY: createdb dropdb migrateup migratedown sqlc test server mock createmigration
+.PHONY: createdb dropdb migrateup migratedown sqlc test server mock createmigration proto
+
+proto:
+	rm -f pb/*.go
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+	proto/*.proto
 
 mock:
 	mockgen -package mockdb -destination db/mock/store.go github.com/ngtrdai197/simple-bank/db/sqlc Store
