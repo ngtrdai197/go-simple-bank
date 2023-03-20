@@ -6,9 +6,9 @@ import (
 	"net"
 
 	_ "github.com/lib/pq"
-	"github.com/ngtrdai197/simple-bank/api"
+	"github.com/ngtrdai197/simple-bank/cmd/api"
+	"github.com/ngtrdai197/simple-bank/cmd/gapi"
 	db "github.com/ngtrdai197/simple-bank/db/sqlc"
-	"github.com/ngtrdai197/simple-bank/gapi"
 	"github.com/ngtrdai197/simple-bank/pb"
 	"github.com/ngtrdai197/simple-bank/util"
 	"google.golang.org/grpc"

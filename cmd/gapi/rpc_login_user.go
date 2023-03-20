@@ -19,14 +19,14 @@ func (server *Server) LoginUser(
 	user, err := server.store.GetUser(ctx, req.GetUsername())
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, status.Errorf(codes.NotFound, "user not found")
+			return nil, status.Errorf(codes.NotFound, "User not found")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to find user")
+		return nil, status.Errorf(codes.Internal, "Failed to find user")
 	}
 
 	err = util.CheckPassword(req.Password, user.HashedPassword)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "incorrect password")
+		return nil, status.Errorf(codes.NotFound, "Incorrect password")
 	}
 
 	accessToken, accessPayload, err := server.tokenMaker.CreateToken(
@@ -34,7 +34,7 @@ func (server *Server) LoginUser(
 		server.config.AccessTokenDuration,
 	)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create access token")
+		return nil, status.Errorf(codes.Internal, "Failed to create access token")
 	}
 
 	refreshToken, refreshPayload, err := server.tokenMaker.CreateToken(
@@ -42,7 +42,7 @@ func (server *Server) LoginUser(
 		server.config.RefreshTokenDuration,
 	)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create refresh token")
+		return nil, status.Errorf(codes.Internal, "Failed to create refresh token")
 	}
 
 	session, err := server.store.CreateSession(ctx, db.CreateSessionParams{
@@ -55,7 +55,7 @@ func (server *Server) LoginUser(
 		ExpiresAt:    refreshPayload.ExpiredAt,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create session")
+		return nil, status.Errorf(codes.Internal, "Failed to create session")
 	}
 
 	rsp := &pb.LoginUserResponse{
