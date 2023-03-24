@@ -3,7 +3,13 @@ include app.env
 # Variables for binding arguments from cmd
 MIGRATION_FILE_NAME?=default_migration_file_name
 
-.PHONY: createdb dropdb migrateup migratedown sqlc test server mock createmigration proto
+.PHONY: createdb dropdb migrateup migratedown sqlc test server mock createmigration proto producer consumer
+
+consumer:
+	go run ./cmd/kafka/consumer/main.go
+
+producer:
+	go run ./cmd/kafka/producer/main.go
 
 proto:
 	rm -f pb/*.go
