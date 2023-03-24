@@ -5,13 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 	db "github.com/ngtrdai197/simple-bank/db/sqlc"
 	"github.com/ngtrdai197/simple-bank/token"
+	"github.com/ngtrdai197/simple-bank/util"
+	"github.com/rs/zerolog/log"
 )
 
 type createAccountRequest struct {
@@ -105,6 +106,8 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 		Offset: (req.PageID - 1) * req.PageSize,
 		Owner:  authPayload.Username,
 	}
+
+	log.Info().Msgf("%v", util.Stringify(authPayload))
 
 	accounts, err := server.store.ListAccounts(ctx, arg)
 	if err != nil {

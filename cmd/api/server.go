@@ -31,24 +31,31 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 		v.RegisterValidation("currency", validCurrency)
 	}
 
-	server.setupRouter()
+	server.setupRouter(config)
 	return server, nil
 }
 
-func (server *Server) setupRouter() {
+func (server *Server) setupRouter(config util.Config) {
 	router := gin.Default()
+
+	router.Use(util.DefaultStructuredLogger())
+	if config.AppEnv != "DEVELOP" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)
 	router.POST("/tokens/renew_access", server.renewAccessToken)
 
-	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
-	authRoutes.POST("/accounts", server.createAccount)
-	authRoutes.GET("/accounts/:id", server.getAccount)
-	authRoutes.GET("/accounts", server.listAccounts)
+	authRoutes := router.Group("/")
+	authRoutes.Use(authMiddleware(server.tokenMaker))
+	{
+		authRoutes.POST("/accounts", server.createAccount)
+		authRoutes.GET("/accounts/:id", server.getAccount)
+		authRoutes.GET("/accounts", server.listAccounts)
 
-	authRoutes.POST("/transfers", server.createTransfer)
-
+		authRoutes.POST("/transfers", server.createTransfer)
+	}
 	server.router = router
 }
 
