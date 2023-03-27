@@ -4,6 +4,7 @@ package pb;
 
 import "user.proto";
 import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/ngtrdai197/simple-bank/pb";
 
 message LoginUserRequest {
